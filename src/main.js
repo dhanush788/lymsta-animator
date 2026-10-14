@@ -78,7 +78,7 @@ function applyRoute (route) {
   // Open on the chase camera at the start line. Framing the whole route
   // renders a near-empty screen, because a 4-unit vehicle on a 300-unit
   // route is invisible from that distance.
-  scene.seek(0)
+  scene.seek(0.015)
   els.distance.textContent = formatDistance(route.distance)
   els.duration.textContent = formatDuration(route.duration)
   els.scrub.value = '0'

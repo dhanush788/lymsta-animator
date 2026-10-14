@@ -121,20 +121,20 @@ export class JourneyScene {
     this.routeGroup.add(this._marker(pts[pts.length - 1], 0xffffff))
 
     this.setVehicle(this.vehicleId)
-    this.seek(0)
+    this.seek(0.015)
   }
 
   _marker (position, color) {
     const g = new THREE.Group()
     const pillar = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.35, 0.35, 11, 10),
-      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5 })
+      new THREE.CylinderGeometry(0.16, 0.16, 6.5, 10),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.35 })
     )
-    pillar.position.y = 5.5
+    pillar.position.y = 3.25
     g.add(pillar)
 
     const ring = new THREE.Mesh(
-      new THREE.RingGeometry(2.6, 3.3, 28),
+      new THREE.RingGeometry(2.4, 2.9, 28),
       new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.65, side: THREE.DoubleSide })
     )
     ring.rotation.x = -Math.PI / 2
@@ -180,7 +180,7 @@ export class JourneyScene {
       const ahead = this.curve.getTangentAt(Math.min(1, this.progress + 0.004))
       const turn = Math.atan2(ahead.x, ahead.z) - Math.atan2(tangent.x, tangent.z)
       const wrapped = Math.atan2(Math.sin(turn), Math.cos(turn))
-      this.vehicle.rotateZ(THREE.MathUtils.clamp(wrapped * 6, -0.45, 0.45))
+      this.vehicle.rotateZ(THREE.MathUtils.clamp(wrapped * 2.2, -0.16, 0.16))
     }
 
     const back = tangent.clone().multiplyScalar(-CAM_BACK)

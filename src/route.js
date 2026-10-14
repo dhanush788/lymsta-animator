@@ -87,8 +87,25 @@ export async function fetchRoute (start, end, profile = 'driving') {
     start, end, straight: false,
     distance: leg.distance,
     duration: leg.duration,
-    coordinates: leg.geometry.coordinates
+    coordinates: decimate(leg.geometry.coordinates)
   }
+}
+
+/**
+ * Mapbox returns full-fidelity geometry — a 150 km drive comes back as ~1900
+ * points. The curve is smoothed through them anyway, so the extra detail buys
+ * nothing visible while costing tube segments and arc-length lookups on every
+ * frame. Keep the endpoints exactly and evenly sample the middle.
+ */
+const MAX_POINTS = 360
+
+export function decimate (coordinates, max = MAX_POINTS) {
+  if (coordinates.length <= max) return coordinates
+  const step = (coordinates.length - 1) / (max - 1)
+  const out = []
+  for (let i = 0; i < max - 1; i++) out.push(coordinates[Math.round(i * step)])
+  out.push(coordinates[coordinates.length - 1])
+  return out
 }
 
 export function demoRoute () {
