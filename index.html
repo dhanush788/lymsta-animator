@@ -16,68 +16,132 @@
 
 <div class="app">
 
-  <aside class="panel">
-    <header class="panel-head">
+  <!-- ------------------------------------------------------------ rail -- -->
+  <aside class="rail">
+
+    <header class="rail-head">
       <a class="wordmark" href="https://lymsta.com/">lymsta<span class="dot">.</span></a>
-      <p class="product">Animator</p>
+      <h1 class="product">Animator</h1>
+      <p class="kicker">Type two places. Watch the drive. Keep the clip.</p>
     </header>
 
-    <div id="demo-note" class="note note--warn" hidden>
-      <strong>Demo mode.</strong>
-      No Mapbox token is configured, so place search is off and a sample route
-      is loaded. Add <code>VITE_MAPBOX_TOKEN</code> to <code>.env</code> to search real places.
-    </div>
+    <div class="rail-body">
 
-    <form id="route-form" class="field-set">
-      <div class="field">
-        <label for="start">From</label>
-        <input id="start" name="start" type="text" autocomplete="off"
-               placeholder="Bengaluru" spellcheck="false">
+      <div id="demo-note" class="note" hidden>
+        <span class="note-mark" aria-hidden="true"></span>
+        <p>
+          <strong>Demo mode.</strong>
+          No Mapbox token is configured, so place search is off and a sample route
+          is loaded. Add <code>VITE_MAPBOX_TOKEN</code> to <code>.env</code> to
+          search real places.
+        </p>
       </div>
 
-      <div class="field">
-        <label for="end">To</label>
-        <input id="end" name="end" type="text" autocomplete="off"
-               placeholder="Mysuru" spellcheck="false">
-      </div>
+      <!-- 01 — the primary action ------------------------------------- -->
+      <section class="section">
+        <h2 class="section-title"><span class="idx">01</span>Route</h2>
 
-      <button id="plan" class="btn btn--primary" type="submit">Plan route</button>
-    </form>
+        <form id="route-form" class="route">
+          <div class="route-card">
+            <div class="route-row">
+              <span class="marker marker--a" aria-hidden="true"></span>
+              <label for="start">From</label>
+              <input id="start" name="start" type="text" autocomplete="off"
+                     placeholder="Bengaluru" spellcheck="false">
+            </div>
+            <div class="route-row">
+              <span class="marker marker--b" aria-hidden="true"></span>
+              <label for="end">To</label>
+              <input id="end" name="end" type="text" autocomplete="off"
+                     placeholder="Mysuru" spellcheck="false">
+            </div>
+          </div>
 
-    <div class="field">
-      <span class="label">Vehicle</span>
-      <div id="vehicles" class="chips" role="group" aria-label="Vehicle"></div>
+          <button id="plan" class="btn btn--primary" type="submit">Plan route</button>
+        </form>
+
+        <dl class="stats">
+          <div class="stat">
+            <dt>Distance</dt>
+            <dd id="stat-distance">—</dd>
+          </div>
+          <div class="stat">
+            <dt>Travel time</dt>
+            <dd id="stat-duration">—</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- 02 — how the shot looks ------------------------------------- -->
+      <section class="section">
+        <h2 class="section-title"><span class="idx">02</span>Shot</h2>
+
+        <div class="control">
+          <span class="control-label" id="vehicle-label">Vehicle</span>
+          <div id="vehicles" class="chips" role="group" aria-labelledby="vehicle-label"></div>
+        </div>
+
+        <div class="control">
+          <label class="control-label" for="zoom">
+            Camera distance
+            <span id="zoom-val" class="val">—</span>
+          </label>
+          <input id="zoom" class="slider" type="range" min="0" max="1000" value="250">
+          <div class="scale" aria-hidden="true">
+            <span>Chase</span><span>Globe</span>
+          </div>
+        </div>
+
+        <!-- The globe icon and the switch are drawn as ::before / ::after so
+             they survive main.js rewriting the button's label text. -->
+        <button id="globe" class="toggle" type="button" aria-pressed="false">Globe view</button>
+
+        <div class="control">
+          <label class="control-label" for="length">
+            Clip length
+            <span id="length-val" class="val">12s</span>
+          </label>
+          <input id="length" class="slider" type="range" min="5" max="30" step="1" value="12">
+        </div>
+      </section>
+
     </div>
 
-    <div class="field">
-      <label for="length">Clip length <span id="length-val" class="val">12s</span></label>
-      <input id="length" type="range" min="5" max="30" step="1" value="12">
+    <div class="rail-foot">
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <p class="fine">Rendered in your browser. Nothing is uploaded.</p>
     </div>
 
-    <dl class="stats">
-      <div><dt>Distance</dt><dd id="stat-distance">—</dd></div>
-      <div><dt>Travel time</dt><dd id="stat-duration">—</dd></div>
-    </dl>
-
-    <div class="actions">
-      <button id="play" class="btn" type="button">Play</button>
-      <button id="record" class="btn btn--accent" type="button">Record &amp; download</button>
-    </div>
-
-    <p id="status" class="status" role="status" aria-live="polite"></p>
-
-    <footer class="panel-foot">
-      <p>Rendered in your browser. Nothing is uploaded.</p>
-    </footer>
   </aside>
 
+  <!-- ----------------------------------------------------------- stage -- -->
   <main class="stage">
     <canvas id="stage" aria-label="Journey animation"></canvas>
-    <div id="scrub-wrap" class="scrub-wrap">
-      <input id="scrub" class="scrub" type="range" min="0" max="1000" value="0"
-             aria-label="Scrub through the journey">
+
+    <div class="scrim scrim--top" aria-hidden="true"></div>
+    <div class="scrim scrim--bottom" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <div id="rec-badge" class="rec-badge" hidden>
+      <span class="rec-dot" aria-hidden="true"></span>Recording
     </div>
-    <div id="rec-badge" class="rec-badge" hidden><span class="rec-dot"></span>Recording</div>
+
+    <div class="transport">
+      <button id="play" class="btn btn--play" type="button">Play</button>
+
+      <div class="track">
+        <input id="scrub" class="scrub" type="range" min="0" max="1000" value="0"
+               aria-label="Scrub through the journey">
+        <div class="scale scale--track" aria-hidden="true">
+          <span>Start</span><span>Finish</span>
+        </div>
+      </div>
+
+      <button id="record" class="btn btn--rec" type="button"
+              aria-label="Record the clip and download it">
+        <span class="rec-glyph" aria-hidden="true"></span>Record
+      </button>
+    </div>
   </main>
 
 </div>

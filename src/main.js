@@ -24,7 +24,10 @@ const els = {
   status: $('status'),
   canvas: $('stage'),
   scrub: $('scrub'),
-  recBadge: $('rec-badge')
+  recBadge: $('rec-badge'),
+  zoom: $('zoom'),
+  zoomVal: $('zoom-val'),
+  globe: $('globe')
 }
 
 const scene = new JourneyScene(els.canvas)
@@ -140,6 +143,48 @@ function stopPlayback () {
 els.play.addEventListener('click', () => {
   state.playing ? stopPlayback() : startPlayback()
 })
+
+
+/* --------------------------------------------------------------- zoom -- */
+
+/** Name the zoom band so the number means something to a person. */
+function zoomLabel (z) {
+  if (z >= 0.82) return 'Globe'
+  if (z >= 0.55) return 'Wide'
+  if (z >= 0.28) return 'Follow'
+  return 'Chase'
+}
+
+function applyZoom (z) {
+  scene.setZoom(z)
+  if (els.zoomVal) els.zoomVal.textContent = zoomLabel(z)
+  // Leaving the globe band by hand should release the toggle too, otherwise
+  // the button claims a state the camera is no longer in.
+  if (els.globe && z < 0.82 && els.globe.getAttribute('aria-pressed') === 'true') {
+    els.globe.setAttribute('aria-pressed', 'false')
+    scene.setGlobeMode(false)
+  }
+}
+
+if (els.zoom) {
+  els.zoom.addEventListener('input', () => applyZoom(Number(els.zoom.value) / 1000))
+  applyZoom(Number(els.zoom.value) / 1000)
+}
+
+if (els.globe) {
+  els.globe.addEventListener('click', () => {
+    const on = els.globe.getAttribute('aria-pressed') !== 'true'
+    els.globe.setAttribute('aria-pressed', String(on))
+    scene.setGlobeMode(on)
+    if (on) {
+      // Move the camera too, not just the slider thumb — otherwise the
+      // control claims a position the camera never took.
+      if (els.zoom) els.zoom.value = '1000'
+      scene.setZoom(1)
+      if (els.zoomVal) els.zoomVal.textContent = 'Globe'
+    }
+  })
+}
 
 /* ----------------------------------------------------------- record -- */
 
