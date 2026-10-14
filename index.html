@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Journey — Lymsta</title>
+<meta name="description" content="Animate a journey between two places and download the clip.">
+<meta name="theme-color" content="#09090b">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="panel">
+    <header class="panel-head">
+      <a class="wordmark" href="https://lymsta.com/">lymsta<span class="dot">.</span></a>
+      <p class="product">Journey</p>
+    </header>
+
+    <div id="demo-note" class="note note--warn" hidden>
+      <strong>Demo mode.</strong>
+      No Mapbox token is configured, so place search is off and a sample route
+      is loaded. Add <code>VITE_MAPBOX_TOKEN</code> to <code>.env</code> to search real places.
+    </div>
+
+    <form id="route-form" class="field-set">
+      <div class="field">
+        <label for="start">From</label>
+        <input id="start" name="start" type="text" autocomplete="off"
+               placeholder="Bengaluru" spellcheck="false">
+      </div>
+
+      <div class="field">
+        <label for="end">To</label>
+        <input id="end" name="end" type="text" autocomplete="off"
+               placeholder="Mysuru" spellcheck="false">
+      </div>
+
+      <button id="plan" class="btn btn--primary" type="submit">Plan route</button>
+    </form>
+
+    <div class="field">
+      <span class="label">Vehicle</span>
+      <div id="vehicles" class="chips" role="group" aria-label="Vehicle"></div>
+    </div>
+
+    <div class="field">
+      <label for="length">Clip length <span id="length-val" class="val">12s</span></label>
+      <input id="length" type="range" min="5" max="30" step="1" value="12">
+    </div>
+
+    <dl class="stats">
+      <div><dt>Distance</dt><dd id="stat-distance">—</dd></div>
+      <div><dt>Travel time</dt><dd id="stat-duration">—</dd></div>
+    </dl>
+
+    <div class="actions">
+      <button id="play" class="btn" type="button">Play</button>
+      <button id="record" class="btn btn--accent" type="button">Record &amp; download</button>
+    </div>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <footer class="panel-foot">
+      <p>Rendered in your browser. Nothing is uploaded.</p>
+    </footer>
+  </aside>
+
+  <main class="stage">
+    <canvas id="stage" aria-label="Journey animation"></canvas>
+    <div id="scrub-wrap" class="scrub-wrap">
+      <input id="scrub" class="scrub" type="range" min="0" max="1000" value="0"
+             aria-label="Scrub through the journey">
+    </div>
+    <div id="rec-badge" class="rec-badge" hidden><span class="rec-dot"></span>Recording</div>
+  </main>
+
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
