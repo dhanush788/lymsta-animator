@@ -93,5 +93,5 @@ export function downloadBlob (blob, filename) {
 export function safeName (start, end) {
   const slug = s => (s || 'place').split(',')[0]
     .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 28)
-  return `lymsta-${slug(start)}-to-${slug(end)}`
+  return `lymsta-animator-${slug(start)}-to-${slug(end)}`
 }

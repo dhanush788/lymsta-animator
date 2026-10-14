@@ -1,7 +1,7 @@
-# Lymsta Journey
+# Lymsta Animator
 
 Enter two places, watch a vehicle animate the journey in 3D, download the clip.
-The first Lymsta product.
+The first Lymsta product. Lives at https://animator.lymsta.com
 
 ## Running it
 
